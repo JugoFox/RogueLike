@@ -1,4 +1,7 @@
-﻿namespace RogueLike.Core
+﻿using RogueLike.GameObjects;
+using System.Numerics;
+
+namespace RogueLike.Core
 {
     public class PescerkaGenerator
     {
@@ -97,13 +100,30 @@
             return x > 0 && x < _width - 1 && y > 0 && y < _height - 1;
         }
 
-        public int[,] GetPescerka()
+        public List<PescerkaWay> GetPescerka()
         {
+            Console.SetCursorPosition(0, 0);
+            List<PescerkaWay> way = new List<PescerkaWay>();
             Drawing draw = new Drawing();
 
             GeneratePescerka();
-            draw.PrintPescerka(_pescerka, _width, _height);
-            return _pescerka;
+            for (int y = 0; y < _height; y++)
+            {
+                for (int x = 0; x < _width; x++)
+                {                    
+                        Console.Write('#');
+                    if (_pescerka[x, y] == 0)
+                        way.Add(new PescerkaWay(' ', new Vector2(x, y), 0));
+                    else if (_pescerka[x, y] == 2)
+                        way.Add(new PescerkaWay(' ', new Vector2(x, y), 2));
+                }
+                Console.WriteLine();
+            }
+            Console.SetCursorPosition(0, 0);
+            Console.CursorVisible = false;
+
+            draw.PrintPescerka(way, _width, _height);
+            return way;
         }
 
         private class Direction

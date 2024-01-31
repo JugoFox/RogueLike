@@ -1,94 +1,80 @@
 ﻿using RogueLike.GameObjects;
+using System.Drawing;
 
 namespace RogueLike.Core
 {
     public class Drawing
     {
-        public void PrintUnit(char[,] unit, int width, int height)
+        public void PrintPescerka(List<PescerkaWay> way, int width, int height)
         {
-            for (int y = 0; y < height; y++)
+            foreach (var Way in way)
             {
-                for (int x = 0; x < width; x++)
-                {
-                    if (unit[x, y] == 'Ф')
-                    {
-                        Console.SetCursorPosition(x, y);
-                        Console.Write(unit[x, y]);
-                    }
-                    else if (unit[x, y] == 'Т')
-                    {
-                        Console.SetCursorPosition(x, y);
-                        Console.Write(unit[x, y]);
-                    }
-                    else if (unit[x, y] == 'Д')
-                    {
-                        Console.SetCursorPosition(x, y);
-                        Console.Write(unit[x, y]);
-                    }
-                }
-                Console.WriteLine();
+                Console.SetCursorPosition((int)Way.Position.X, (int)Way.Position.Y);
+                Console.Write(Way.Symbol);
             }
-            Console.SetCursorPosition(0, 0);
-        }
 
-        public void PrintRiches(char[,] riches, int width, int height)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    if (riches[x, y] == '.')
-                    {
-                        Console.SetCursorPosition(x, y);
-                        Console.Write(riches[x, y]);
-                    }
-                }
-                Console.WriteLine();
-            }
-            Console.SetCursorPosition(0, 0);
-        }
-
-
-        public void PrintPescerka(int[,] pescerka, int width, int height)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    if (pescerka[x, y] == 1)
-                        Console.Write('#');
-                    else if (pescerka[x, y] == 0)
-                        Console.Write(' ');
-                    else if (pescerka[x, y] == 2)
-                        Console.Write(' ');
-                }
-                Console.WriteLine();
-            }
             Console.SetCursorPosition(0, 0);
             Console.CursorVisible = false;
         }
 
-
-        public void DrawLog(int width, int height, Patsan patsan, List<string> logi, List<int> score)
+        public void PrintUnit(List<Unit> unit, int width, int height)
         {
-            int _score = 0;
+            foreach(var Unit in unit)
+            {                
+                Console.SetCursorPosition((int)Unit.Position.X, (int)Unit.Position.Y);
 
-            foreach (int Score in score)
-                _score += Score;
+                if(Unit.Symbol =='Ф')
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                else if(Unit.Symbol == 'Т')
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                else if (Unit.Symbol == 'Д')
+                    Console.ForegroundColor = ConsoleColor.Magenta;
 
+                Console.Write(Unit.Symbol);
+                Console.ResetColor();
+            }
+            Console.SetCursorPosition(0, 0);
+        }
+
+        public void PrintRiches(List<Riches> riches, int width, int height)
+        {
+            foreach(var Riches in riches)
+            {
+                Console.SetCursorPosition((int)Riches.Position.X, (int)Riches.Position.Y);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(Riches.Symbol);
+                Console.ResetColor();
+            }
+            Console.SetCursorPosition(0, 0);
+        }
+
+        public void PrintBullet(List<Bullet> bullet, int width, int height)
+        {
+            foreach (var Bullet in bullet)
+            {
+                Console.SetCursorPosition((int)Bullet.Position.X, (int)Bullet.Position.Y);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(Bullet.Symbol);
+                Console.ResetColor();
+            }
+            Console.SetCursorPosition(0, 0);
+        }
+
+        public void DrawLog(int width, Patsan patsan, List<string> logi, int score)
+        {
             Console.SetCursorPosition(width + 6, 3);
             Console.Write("Здоровье: " + patsan.Health);
 
             Console.SetCursorPosition(width + 6, 5);
-            Console.Write("Счет: " + _score);
+            Console.Write("Счет: " + score);
 
             Console.SetCursorPosition(width + 6, 7);
             Console.Write("Сообщения:");
 
             var reversLogi = new List<string>();
             reversLogi = logi.ToList();
-
             reversLogi.Reverse();
+
             if (reversLogi.Count != 0)
             {
                 for (int i = 0; i < 10; i++)
@@ -102,7 +88,7 @@ namespace RogueLike.Core
                 {
                     for (int i = 0; i < reversLogi.Count; i++)
                     {
-                        Console.SetCursorPosition(width + 7, 8 + i);
+                        Console.SetCursorPosition(width + 6, 8 + i);
                         Console.Write(reversLogi[i]);
                     }
                 }

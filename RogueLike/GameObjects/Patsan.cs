@@ -1,11 +1,12 @@
-﻿namespace RogueLike.GameObjects
+﻿using System.Numerics;
+
+namespace RogueLike.GameObjects
 {
     public class Patsan : Unit
     {
-        public Patsan(char symbol, int x, int y, int health, int damage) : base(symbol, x, y, health, damage)
+        public Patsan(char symbol, Vector2 position , int health, int damage) : base(symbol, position, health, damage)
         {
-            X = x;
-            Y = y;
+            Position = position;
             Health = health;
             Damage = damage;
         }

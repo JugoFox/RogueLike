@@ -1,17 +1,25 @@
-﻿namespace RogueLike.Core
+﻿using RogueLike.GameObjects;
+using System.Numerics;
+
+namespace RogueLike.Core
 {
     public class UnitGenerator
     {
-        private int[,] _pescerka;
-        private char[,] _unit;
+        private List<PescerkaWay> _way = new List<PescerkaWay>();
         private int _width, _height;
+        private int _amountEbaka, _amountHoboWithShotgun;
+        private Random _random;
+        private Patsan _patsan;
+        private List<Unit> _units = new List<Unit>();
 
-        public UnitGenerator(int[,] pescerka, int width, int height)
+        public UnitGenerator(List<PescerkaWay> way, int width, int height, int amountEbaka, int amountHoboWithShotgun, Random random)
         {
-            _pescerka = pescerka;
+            _way = way;
             _width = width;
             _height = height;
-            _unit = new char[width, height];
+            _random = random;
+            _amountEbaka = amountEbaka;
+            _amountHoboWithShotgun = amountHoboWithShotgun;
         }
 
         public void GenerateUnit()
@@ -19,19 +27,6 @@
             PatsanGenerate();
             EbakaGenerate();
             HoboWithShotgunGenerate();
-
-            for (int y = 0; y < _height; y++)
-                for (int x = 0; x < _width; x++)
-                    if (_pescerka[x, y] == 1 || _pescerka[x, y] == 0)
-                        _unit[x, y] = ' ';
-                    else if (_pescerka[x, y] == 2)
-                        _unit[x, y] = ' ';
-                    else if (_pescerka[x, y] == 8)
-                        _unit[x, y] = 'Ф';
-                    else if (_pescerka[x, y] == 4)
-                        _unit[x, y] = 'Т';
-                    else if (_pescerka[x, y] == 5)
-                        _unit[x, y] = 'Д';
         }
 
         public void PatsanGenerate()
@@ -40,14 +35,15 @@
 
             while (isSetPatsan)
             {
-                Random rand = new Random();
-                int x = rand.Next(1, _width - 2);
-                int y = rand.Next(1, _height - 2);
-
-                if (_pescerka[x, y] == 0)
+                foreach (var way in _way)
                 {
-                    _pescerka[x, y] = 8;
-                    isSetPatsan = false;
+                    if (way.Position.X == _random.Next(1, _width - 2) && way.Position.Y == _random.Next(1, _height - 2))
+                    {
+                        _patsan = new Patsan('Ф', new Vector2(way.Position.X, way.Position.Y), 150, 10);
+                        _units.Add(_patsan);
+                        isSetPatsan = false;
+                        break;
+                    }
                 }
             }
         }
@@ -57,21 +53,35 @@
             int countPosition = 0;
             int countSpawn = 0;
 
-            for (int y = 0; y < _height; y++)
-                for (int x = 0; x < _width; x++)
-                    if (_pescerka[x, y] == 0)
-                        countPosition++;
+            foreach (var way in _way)
+                countPosition++;
 
-            while (countSpawn < countPosition / 30)
+            if (_amountEbaka > countPosition / 30)
             {
-                Random rand = new Random();
-                int x = rand.Next(1, _width - 2);
-                int y = rand.Next(1, _height - 2);
-
-                if (_pescerka[x, y] == 0)
+                while (countSpawn < countPosition / 30)
                 {
-                    _pescerka[x, y] = 4;
-                    countSpawn++;
+                    foreach (var way in _way)
+                    {
+                        if (way.Position.X == _random.Next(1, _width - 2) && way.Position.Y == _random.Next(1, _height - 2))
+                        {
+                            _units.Add(new Ebaka('Т', new Vector2(way.Position.X, way.Position.Y), 10, 10, 2));
+                            countSpawn++;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                while (countSpawn < _amountEbaka)
+                {
+                    foreach (var way in _way)
+                    {
+                        if (way.Position.X == _random.Next(1, _width - 2) && way.Position.Y == _random.Next(1, _height - 2))
+                        {
+                            _units.Add(new Ebaka('Т', new Vector2(way.Position.X, way.Position.Y), 10, 10, 2));
+                            countSpawn++;
+                        }
+                    }
                 }
             }
         }
@@ -81,37 +91,46 @@
             int countPosition = 0;
             int countSpawn = 0;
 
-            for (int y = 0; y < _height; y++)
+            foreach (var way in _way)
+                countPosition++;
+
+            if (_amountHoboWithShotgun > countPosition / 30)
             {
-                for (int x = 0; x < _width; x++)
+                while (countSpawn < countPosition / 30)
                 {
-                    if (_pescerka[x, y] == 0)
-                        countPosition++;
+                    foreach (var way in _way)
+                    {
+                        if (way.Position.X == _random.Next(1, _width - 2) && way.Position.Y == _random.Next(1, _height - 2))
+                        {
+                            _units.Add(new HoboWithShotgun('Д', new Vector2(way.Position.X, way.Position.Y), 10, 10, 5));
+                            countSpawn++;
+                        }
+                    }
                 }
             }
-
-            while (countSpawn < countPosition / 30)
+            else
             {
-                Random rand = new Random();
-                int x = rand.Next(1, _width - 2);
-                int y = rand.Next(1, _height - 2);
-
-                if (_pescerka[x, y] == 0)
+                while (countSpawn < _amountHoboWithShotgun)
                 {
-                    _pescerka[x, y] = 5;
-                    countSpawn++;
+                    foreach (var way in _way)
+                    {
+                        if (way.Position.X == _random.Next(1, _width - 2) && way.Position.Y == _random.Next(1, _height - 2))
+                        {
+                            _units.Add(new HoboWithShotgun('Д', new Vector2(way.Position.X, way.Position.Y), 10, 10, 6));
+                            countSpawn++;
+                        }
+                    }
                 }
             }
         }
 
-        public char[,] GetUnit()
+        public List<Unit> GetUnit()
         {
             Drawing draw = new Drawing();
 
             GenerateUnit();
-            draw.PrintUnit(_unit, _width, _height);
-            return _unit;
+            draw.PrintUnit(_units, _width, _height);
+            return _units;
         }
-
     }
 }

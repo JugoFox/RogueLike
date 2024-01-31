@@ -1,13 +1,15 @@
-﻿namespace RogueLike.GameObjects
+﻿using System.Numerics;
+
+namespace RogueLike.GameObjects
 {
     public class HoboWithShotgun : Unit
     {
-        public HoboWithShotgun(char symbol, int x, int y, int health, int damage) : base(symbol, x, y, health, damage)
+        public HoboWithShotgun(char symbol, Vector2 position, int health, int damage, int cooldown) : base(symbol, position, health, damage, cooldown)
         {
-            X = x;
-            Y = y;
+            Position = position;
             Health = health;
             Damage = damage;
+            Cooldown = cooldown;
         }        
     }
 }

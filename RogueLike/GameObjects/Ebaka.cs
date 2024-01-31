@@ -1,11 +1,12 @@
-﻿namespace RogueLike.GameObjects
+﻿using System.Numerics;
+
+namespace RogueLike.GameObjects
 {
     public class Ebaka : Unit
-    {        
-        public Ebaka(char symbol, int x, int y, int health, int damage, int cooldown) : base(symbol, x, y, health, damage, cooldown)
+    {
+        public Ebaka(char symbol, Vector2 position, int health, int damage, int cooldown) : base(symbol, position, health, damage, cooldown)
         {
-            X = x;
-            Y = y;
+            Position = position;
             Health = health;
             Damage = damage;
             Cooldown = cooldown;

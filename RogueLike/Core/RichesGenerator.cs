@@ -1,50 +1,70 @@
 ﻿using RogueLike.GameObjects;
+using System;
+using System.Numerics;
 
 namespace RogueLike.Core
 {
     public class RichesGenerator
     {
-        private int[,] _pescerka;
-        private char[,] _riches;
+        private List<PescerkaWay> _pescerkaWay = new List<PescerkaWay>();
         private int _width, _height;
+        private int _amountRiches;
+        private Random _random;
+        private List<Riches> _riches = new List<Riches>();
 
-        public RichesGenerator(int[,] pescerka, int width, int height)
+        public RichesGenerator(List<PescerkaWay> pescerkaWay, int width, int height, int amountRiches, Random random)
         {
-            _pescerka = pescerka;
+            _pescerkaWay = pescerkaWay;
             _width = width;
             _height = height;
-            _riches = new char[width, height];
+            _amountRiches = amountRiches;
+            _random = random;
         }
 
-        public void RichesGenerate()
+        private void GenerateRiches()
         {
             int countPosition = 0;
             int countSpawn = 0;
 
-            for (int y = 0; y < _height; y++)
-                for (int x = 0; x < _width; x++)
-                    if (_pescerka[x, y] == 0)
-                        countPosition++;
+            foreach (var pescerkaWay in _pescerkaWay)
+                countPosition++;
 
-            while (countSpawn < countPosition / 20)
+            if(_amountRiches > countPosition / 20)
             {
-                Random rand = new Random();
-                int x = rand.Next(1, _width - 2);
-                int y = rand.Next(1, _height - 2);
-
-                if (_pescerka[x, y] == 0)
+                while (countSpawn < countPosition / 20)
                 {
-                    _riches[x, y] = '.';
-                    countSpawn++;
+                    foreach (var way in _pescerkaWay)
+                    {
+                        if (way.Position.X == _random.Next(1, _width - 2) && way.Position.Y == _random.Next(1, _height - 2))
+                        {
+                            _riches.Add(new Riches('.', new Vector2(way.Position.X, way.Position.Y), _random.Next(0, 6), 1));
+                            countSpawn++;
+                        }
+                    }
                 }
             }
+            else
+            {                
+                while (countSpawn < _amountRiches)
+                {
+                    foreach (var way in _pescerkaWay)
+                    {
+                        if (way.Position.X == _random.Next(1, _width - 2) && way.Position.Y == _random.Next(1, _height - 2))
+                        {
+                            _riches.Add(new Riches('.', new Vector2(way.Position.X, way.Position.Y), _random.Next(0, 6), 1));
+                            countSpawn++;
+                        }
+                    }
+                }
+            }
+
         }
 
-        public char[,] GetRiches()
+        public List<Riches> GetRiches()
         {
             Drawing draw = new Drawing();
 
-            RichesGenerate();
+            GenerateRiches();
             draw.PrintRiches(_riches, _width, _height);
             return _riches;
         }

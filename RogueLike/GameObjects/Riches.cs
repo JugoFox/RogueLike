@@ -1,9 +1,11 @@
-﻿namespace RogueLike.GameObjects
+﻿using System.Numerics;
+
+namespace RogueLike.GameObjects
 {
     public class Riches
     {
-        public int X { get; }
-        public int Y { get; }
+        public char Symbol { get; }
+        public Vector2 Position { get; }
         public int TypeRiches { get; }
         public int Found { get; set; }
         private string[] descriptionRiches = new string[]
@@ -18,10 +20,10 @@
 
         private int[] scoreRiches = new int[] { 500, 100, 200, 150, 400, 320 };
 
-        public Riches(int x, int y, int typeRiches, int found)
+        public Riches(char symbol, Vector2 position, int typeRiches, int found)
         {
-            X = x;
-            Y = y;
+            Symbol = symbol;
+            Position = position;
             TypeRiches = typeRiches;
             Found = found;
         }
